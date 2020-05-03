@@ -160,4 +160,3 @@ const isValidateTime = function(dataArray, value) {
         return element >= 0  && element <= value;
     })
 }
-console.log(module.exports.isValidCronExpression('4/5 8-4 8/2 ? 1 * 2015'));
