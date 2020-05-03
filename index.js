@@ -316,3 +316,4 @@ const isValidateTime = function(dataArray, value) {
     })
 }
 
+console.log(module.exports.isValidCronExpression('0 0 12 ? * 4#56 *', {error: true})); 
