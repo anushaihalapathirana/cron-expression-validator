@@ -15,4 +15,6 @@ exports.ERROR_MSGES = {
     TIME_ERROR_MSG: 'Minute and Second values must be between 0 and 59 and Hour Values must be between 0 and 23',
 
     DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG: '? can only be specfied for Day-of-Month -OR- Day-of-Week',
+
+    UNEXPECTED_ERROR_MSG: 'Unexpected end of expression',
 }

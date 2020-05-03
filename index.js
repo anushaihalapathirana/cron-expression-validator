@@ -11,7 +11,29 @@ let errorMsg = [];
 
 exports.isValidCronExpression = function(cronExpression, errorObj) {
 
+    if(!/\s/g.test(cronExpression)) {
+        if(errorObj && errorObj.error) {
+            return {
+                isValid: false,
+                errorMessage: CONSTANTS.ERROR_MSGES.UNEXPECTED_ERROR_MSG,
+            }
+        } else {
+            return false;
+        }
+    }
+
     let cronArray = cronExpression.split(" ");
+
+    if(parseInt(cronArray.length) !== 6 && parseInt(cronArray.length) !== 7 ) {
+        if(errorObj && errorObj.error) {
+            return {
+                isValid: false,
+                errorMessage: CONSTANTS.ERROR_MSGES.UNEXPECTED_ERROR_MSG,
+            }
+        } else {
+            return false;
+        }
+    }
 
     let seconds = cronArray[0].trim();
     let minutes = cronArray[1].trim();
@@ -19,7 +41,7 @@ exports.isValidCronExpression = function(cronExpression, errorObj) {
     let dayOfMonth = cronArray[3].trim();
     let month = cronArray[4].trim();
     let dayOfWeek = cronArray[5].trim();
-    let year = cronArray[6].trim();
+    let year = cronArray[6] ? cronArray[6].trim() : null;
 
     let isValidSeconds = isValidTimeValue(seconds, MAX_MIN_SEC_VALUE);
     let isValidMinutes = isValidTimeValue(minutes, MAX_MIN_SEC_VALUE);
@@ -27,7 +49,7 @@ exports.isValidCronExpression = function(cronExpression, errorObj) {
     let isValidDayOfMonth = isValidDayOfMonthValue(dayOfMonth, dayOfWeek);
     let isValidMonth = isValidMonthValue(month);
     let isValidDayOfWeek = isValidDayOfWeekValue(dayOfWeek, dayOfMonth);
-    let isValidYear = isValidYearValue(year);
+    let isValidYear = year ? isValidYearValue(year): true;
 
     if(errorObj && errorObj.error && isError) {
         return {
@@ -43,6 +65,8 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
 
     if((dayOfWeek === '*' && dayOfMonth !== '*') || (dayOfWeek === '?' && dayOfMonth !== '?')) {
         return true;
+    } if(dayOfWeek === '*') {
+        return dayOfMonth !== '*';
     } else if(dayOfWeek.includes('/') && dayOfMonth === '?') {
         let startingDayOfWeekOptionArr = dayOfWeek.split('/');
         if(!isValidateMonthNo([startingDayOfWeekOptionArr[0]], 1, 7)) {
@@ -116,7 +140,7 @@ const isInvalidValues = function(dayOfWeek, dayOfMonth) {
 }
 
 const isHasErrorMsg = function(array) {
-    return array.find(e => e === CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG)
+    return array.includes(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG);
 }
 
 const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
