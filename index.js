@@ -78,6 +78,17 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
         }
         return !isNaN(parseInt(multiDayOfWeekArr[0])) ? 
             isValidateMonthNo(multiDayOfWeekArr, 1, 7) : isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRRAY);
+    } else if(dayOfWeek.includes('#') && dayOfMonth === '?') {
+        let weekdayOfMonthArr = dayOfWeek.split('#');
+        if(!isValidateMonthNo([weekdayOfMonthArr[0]], 1, 7)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_3);
+        }
+        if(!isValidateMonthNo([weekdayOfMonthArr[1]], 1, 5)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_4);
+        }
+        return isValidateMonthNo([weekdayOfMonthArr[0]], 1, 7) && isValidateMonthNo([weekdayOfMonthArr[1]], 1, 5)
     } else if(typeof dayOfWeek === 'string' && dayOfMonth === '?') {
         if(!isNaN(parseInt(dayOfWeek)) && !isValidateMonthNo([dayOfWeek], 1, 7) ) {
             isError = true;
