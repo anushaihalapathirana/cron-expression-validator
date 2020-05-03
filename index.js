@@ -102,13 +102,21 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
             isValidateMonthNo([dayOfWeek], 1, 7) : isValidateMonthStr([dayOfWeek], WEEK_ARRRAY);
     } else {
         isError = true;
-        if(dayOfWeek === '*' && dayOfMonth === '*' || dayOfWeek === '?' && dayOfMonth === '?') {
-            errorMsg.push('? can only be specfied for Day-of-Month -OR- Day-of-Week')
+        if(isInvalidValues(dayOfWeek, dayOfMonth) && !isHasErrorMsg(errorMsg)) {
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG)
         } else {
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2+ " or * or /");
         }
         return false;
     }
+}
+
+const isInvalidValues = function(dayOfWeek, dayOfMonth) {
+    return ((dayOfWeek === '*' && dayOfMonth === '*') || (dayOfWeek === '?' && dayOfMonth === '?'));
+}
+
+const isHasErrorMsg = function(array) {
+    return array.find(e => e === CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG)
 }
 
 const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
@@ -149,8 +157,8 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
         return parseInt(dayOfMonth) >=1 && parseInt(dayOfMonth) <= 31;
     } else {
         isError = true;
-        if(dayOfWeek === '*' && dayOfMonth === '*' || dayOfWeek === '?' && dayOfMonth === '?') {
-            errorMsg.push('? can only be specfied for Day-of-Month -OR- Day-of-Week')
+        if(isInvalidValues(dayOfWeek, dayOfMonth) && !isHasErrorMsg(errorMsg)) {
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_DAY_OF_WEEK_ERROR_MSG);
         } else {
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
         }
@@ -315,3 +323,4 @@ const isValidateTime = function(dataArray, value) {
         return element >= 0  && element <= value;
     })
 }
+
