@@ -1,0 +1,27 @@
+{
+  "name": "cron-expression-validator",
+  "version": "1.0.1",
+  "description": "Validate cron expressions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anushaihalapathirana/cron-expression-validator.git"
+  },
+  "author": "Anusha Ihalapathirana",
+  "keywords": [
+    "cron",
+    "cron-validation",
+    "validation",
+    "cron-expression-validator",
+    "node cron",
+    "node-cron",
+    "quartz",
+    "cron-expression",
+    "node.js"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/anushaihalapathirana/cron-expression-validator#readme"
+}
