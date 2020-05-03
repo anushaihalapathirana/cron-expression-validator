@@ -163,5 +163,3 @@ const isValidateTime = function(dataArray, value) {
     })
 }
 
-
-console.log(module.exports.isValidCronExpression('4/5 8-4 8/2 LW 1 ? 2015')); 
