@@ -25,9 +25,11 @@ if(cronValidator.isValidCronExpression("* * * * * * *")) {
 }
 ```
 
+
 ### Optional second param if you want to get error message
 
-Can get error message by passing ``` js { error: true } ``` as second parameter
+Can get error message by passing ``` { error: true } ``` as second parameter
+
 
 ```js
 if(cronValidator.isValidCronExpression("* * * * 25/2 ? *"), {error: true}) {
