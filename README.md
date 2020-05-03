@@ -31,23 +31,23 @@ Can get error message by passing ``` js { error: true } ``` as second parameter
 
 ```js
 if(cronValidator.isValidCronExpression("* * * * 25/2 ? *"), {error: true}) {
-	/** returns {
-	/* 		isValid: false,
- 	/* 		errorMessage: [ 'Month values must be between 1 and 12' ]
-	/*	}
-	**/
+/** returns {
+/* 		isValid: false,
+/* 		errorMessage: [ 'Month values must be between 1 and 12' ]
+/*	}
+**/
 }
 ```
 
 ``` js
 if(cronValidator.isValidCronExpression("* * * ? * * 123/555"), {error: true}) {
-	/** returns {
-	/* 		isValid: false,
- 	/* 		errorMessage: [ '(Year) - Unsupported value 123 for field. Possible values are 1970-2099 , - * /',
-	/*						'(Year) - Expression 555 is not a valid increment value. Accepted values are 0-129' 
-	/*					  ]
-	/*	}
-	**/
+/** returns {
+/* 		isValid: false,
+/* 		errorMessage: [ '(Year) - Unsupported value 123 for field. Possible values are 1970-2099 , - * /',
+/*				'(Year) - Expression 555 is not a valid increment value. Accepted values are 0-129' 
+/*				]
+/*	}
+**/
 }
 ```
   
