@@ -66,6 +66,8 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
     } else if(dayOfMonth.includes(',') && dayOfWeek === '?') {
         let multiDayOfMonthArr = dayOfMonth.split(',');
         return isValidateMonthNo(multiDayOfMonthArr, 1, 12);
+    } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && (dayOfMonth.toLowerCase() === 'l' || dayOfMonth.toLowerCase() === 'lw')) {
+        return true;
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?') {
         return parseInt(dayOfMonth) >=1 && parseInt(dayOfMonth) <= 31;
     } else {
@@ -160,3 +162,6 @@ const isValidateTime = function(dataArray, value) {
         return element >= 0  && element <= value;
     })
 }
+
+
+console.log(module.exports.isValidCronExpression('4/5 8-4 8/2 LW 1 ? 2015')); 
