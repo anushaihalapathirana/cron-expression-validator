@@ -1,12 +1,15 @@
+const CONSTANTS = require('./constants');
+
 const MONTH_LIST = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const WEEK_ARRRAY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const MIN_YEAR = 1970;
 const MAX_YEAR = 2099;
 const MAX_MIN_SEC_VALUE = 59;
 const MAX_HOUR_VALUE = 23;
+let isError = false;
+let errorMsg = [];
 
-
-exports.isValidCronExpression = function(cronExpression) {
+exports.isValidCronExpression = function(cronExpression, errorObj) {
 
     let cronArray = cronExpression.split(" ");
 
@@ -17,8 +20,6 @@ exports.isValidCronExpression = function(cronExpression) {
     let month = cronArray[4].trim();
     let dayOfWeek = cronArray[5].trim();
     let year = cronArray[6].trim();
-    let error = false;
-    let errorMsg = '';
 
     let isValidSeconds = isValidTimeValue(seconds, MAX_MIN_SEC_VALUE);
     let isValidMinutes = isValidTimeValue(minutes, MAX_MIN_SEC_VALUE);
@@ -28,7 +29,14 @@ exports.isValidCronExpression = function(cronExpression) {
     let isValidDayOfWeek = isValidDayOfWeekValue(dayOfWeek, dayOfMonth);
     let isValidYear = isValidYearValue(year);
 
-    return isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear;
+    if(errorObj && errorObj.error && isError) {
+        return {
+            isValid: isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear,
+            errorMessage: errorMsg,
+        }
+    } else {
+        return isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear;
+    }
 }
 
 const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
@@ -37,19 +45,57 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
         return true;
     } else if(dayOfWeek.includes('/') && dayOfMonth === '?') {
         let startingDayOfWeekOptionArr = dayOfWeek.split('/');
+        if(!isValidateMonthNo([startingDayOfWeekOptionArr[0]], 1, 7)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
+        } 
+        if(!isValidateMonthNo([startingDayOfWeekOptionArr[1]], 0, 7)) {
+            isError = true;
+            errorMsg.push('Expression '+startingDayOfWeekOptionArr[1]+' is not a valid increment value. Accepted values are 0-7');
+        }
         return isValidateMonthNo([startingDayOfWeekOptionArr[0]], 1, 7) && isValidateMonthNo([startingDayOfWeekOptionArr[1]], 0, 7);
     } else if(dayOfWeek.includes('-') && dayOfMonth === '?') {
         let dayOfWeekRangeArr = dayOfWeek.split('-');
+        if(!isNaN(parseInt(dayOfWeekRangeArr[0])) && !isNaN(parseInt(dayOfWeekRangeArr[1])) && !isValidateMonthNo(dayOfWeekRangeArr, 1, 7)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
+        } 
+        if(isNaN(parseInt(dayOfWeekRangeArr[0])) && isNaN(parseInt(dayOfWeekRangeArr[1])) && !isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRRAY)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
+        }
         return !isNaN(parseInt(dayOfWeekRangeArr[0])) && !isNaN(parseInt(dayOfWeekRangeArr[1])) ? 
             isValidateMonthNo(dayOfWeekRangeArr, 1, 7) : isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRRAY);
     } else if(dayOfWeek.includes(',') && dayOfMonth === '?') {
         let multiDayOfWeekArr = dayOfWeek.split(',');
+        if(!isNaN(parseInt(multiDayOfWeekArr[0])) && !isValidateMonthNo(multiDayOfWeekArr, 1, 7)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
+        }
+        if(isNaN(parseInt(multiDayOfWeekArr[0])) && !isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRRAY)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
+        }
         return !isNaN(parseInt(multiDayOfWeekArr[0])) ? 
             isValidateMonthNo(multiDayOfWeekArr, 1, 7) : isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRRAY);
     } else if(typeof dayOfWeek === 'string' && dayOfMonth === '?') {
+        if(!isNaN(parseInt(dayOfWeek)) && !isValidateMonthNo([dayOfWeek], 1, 7) ) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
+        }
+        if(isNaN(parseInt(dayOfWeek)) && !isValidateMonthStr([dayOfWeek], WEEK_ARRRAY)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
+        }
         return !isNaN(parseInt(dayOfWeek)) ? 
             isValidateMonthNo([dayOfWeek], 1, 7) : isValidateMonthStr([dayOfWeek], WEEK_ARRRAY);
     } else {
+        isError = true;
+        if(dayOfWeek === '*' && dayOfMonth === '*' || dayOfWeek === '?' && dayOfMonth === '?') {
+            errorMsg.push('? can only be specfied for Day-of-Month -OR- Day-of-Week')
+        } else {
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2+ " or * or /");
+        }
         return false;
     }
 }
@@ -59,18 +105,44 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
         return true;
     } else if(dayOfMonth.includes('/') && dayOfWeek === '?') {
         let startingDayOfMonthOptionArr = dayOfMonth.split('/');
+        if(!isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
+        }
+        if(!isValidateMonthNo([startingDayOfMonthOptionArr[1]], 0, 31)) {
+            isError = true;
+            errorMsg.push("(Day of month) - Expression "+startingDayOfMonthOptionArr[1]+" is not a valid increment value. Accepted values are 0-31");
+        }
         return isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31) && isValidateMonthNo([startingDayOfMonthOptionArr[1]], 0, 31);
     } else if(dayOfMonth.includes('-') && dayOfWeek === '?') {
         let dayOfMonthRangeArr = dayOfMonth.split('-');
+        if(!isValidateMonthNo(dayOfMonthRangeArr, 1, 31)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
+        }
         return isValidateMonthNo(dayOfMonthRangeArr, 1, 31);
     } else if(dayOfMonth.includes(',') && dayOfWeek === '?') {
         let multiDayOfMonthArr = dayOfMonth.split(',');
+        if(!isValidateMonthNo(multiDayOfMonthArr, 1, 12)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
+        }
         return isValidateMonthNo(multiDayOfMonthArr, 1, 12);
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && (dayOfMonth.toLowerCase() === 'l' || dayOfMonth.toLowerCase() === 'lw')) {
         return true;
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?') {
+        if(parseInt(dayOfMonth) <1 && parseInt(dayOfMonth) > 31) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
+        }
         return parseInt(dayOfMonth) >=1 && parseInt(dayOfMonth) <= 31;
     } else {
+        isError = true;
+        if(dayOfWeek === '*' && dayOfMonth === '*' || dayOfWeek === '?' && dayOfMonth === '?') {
+            errorMsg.push('? can only be specfied for Day-of-Month -OR- Day-of-Week')
+        } else {
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
+        }
         return false;
     }
 }
@@ -92,19 +164,53 @@ const isValidMonthValue = function(month) {
         return true;
     } else if(month.includes('/')) {
         let startingMonthOptionArr = month.split('/');
+        if(!isValidateMonthNo([startingMonthOptionArr[0]], 1, 12)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_ERROR_MSG);
+        }
+        if(!isValidateMonthNo([startingMonthOptionArr[1]], 0, 12)) {
+            isError = true;
+            errorMsg.push('(Month) - Expression '+startingMonthOptionArr[1]+' is not a valid increment value. Accepted values are 0-12');
+        }
         return isValidateMonthNo([startingMonthOptionArr[0]], 1, 12) && isValidateMonthNo([startingMonthOptionArr[1]], 0, 12);
     } else if(month.includes('-')) {
         let monthRangeArr = month.split('-');
+        if(!isNaN(parseInt(monthRangeArr[0])) && !isNaN(parseInt(monthRangeArr[1])) && !isValidateMonthNo(monthRangeArr, 1, 12)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_ERROR_MSG);
+        }
+        if(isNaN(parseInt(monthRangeArr[0])) && isNaN(parseInt(monthRangeArr[1])) && !isValidateMonthStr(monthRangeArr, MONTH_LIST)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_LETTER_ERROR_MSG);
+        }
         return !isNaN(parseInt(monthRangeArr[0])) && !isNaN(parseInt(monthRangeArr[1])) ? 
             isValidateMonthNo(monthRangeArr, 1, 12) : isValidateMonthStr(monthRangeArr, MONTH_LIST);
     } else if(month.includes(',')) {
         let multiMonthArr = month.split(',');
+        if(!isNaN(parseInt(multiMonthArr[0])) && !isValidateMonthNo(multiMonthArr, 1, 12)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_ERROR_MSG);
+        }
+        if(isNaN(parseInt(multiMonthArr[0])) && isValidateMonthStr(multiMonthArr, MONTH_LIST)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_LETTER_ERROR_MSG); 
+        }
         return !isNaN(parseInt(multiMonthArr[0])) ? 
             isValidateMonthNo(multiMonthArr, 1, 12) : isValidateMonthStr(multiMonthArr, MONTH_LIST);
     } else if(typeof month === 'string') {
+        if(!isNaN(parseInt(month)) && !isValidateMonthNo([month], 1, 12)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_ERROR_MSG);
+        }
+        if(isNaN(parseInt(month)) && !isValidateMonthStr([month], MONTH_LIST)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_LETTER_ERROR_MSG); 
+        }
         return !isNaN(parseInt(month)) ? 
             isValidateMonthNo([month], 1, 12) : isValidateMonthStr([month], MONTH_LIST);
     } else {
+        isError = true;
+        errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_LETTER_ERROR_MSG); 
         return false;
     }
 }
@@ -122,18 +228,40 @@ const isValidYearValue = function(year) {
         let startingYearOptionArr = year.split('/');
         let isValidYear = isValidateYear([startingYearOptionArr[0]]);
         let isValidRepeatOccurrence = parseInt(startingYearOptionArr[1]) >= 0 && parseInt(startingYearOptionArr[1]) <=129;
+        if(!isValidYear) {
+            isError = true;
+            errorMsg.push('(Year) - Unsupported value '+startingYearOptionArr[0]+' for field. Possible values are 1970-2099 , - * /'); 
+        }
+        if(!isValidRepeatOccurrence) {
+            isError = true;
+            errorMsg.push('(Year) - Expression '+startingYearOptionArr[1]+' is not a valid increment value. Accepted values are 0-129'); 
+        }
         return isValidYear && isValidRepeatOccurrence;
     } else if(year.includes('-')) {
         let yearRangeArr = year.split('-');
         let isValidYear = isValidateYear(yearRangeArr);
         let isValidRange = parseInt(yearRangeArr[0]) <= parseInt(yearRangeArr[1]);
+        if(!isValidYear) {
+            isError = true;
+            errorMsg.push('(Year) - Unsupported value '+startingYearOptionArr[0]+' for field. Possible values are 1970-2099 , - * /'); 
+        }
+        if(!isValidRange) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.YEAR_ERROR_MSG); 
+        }
         return isValidYear && isValidRange;
     } else if(year.includes(',')) {
         let multiYearArr = year.split(',');
+        if(!isValidateYear(multiYearArr)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.YEAR_UNSUPPORT_VAL_ERROR_MSG); 
+        }
         return isValidateYear(multiYearArr);
     } else if (parseInt(year) >= 1970 && parseInt(year) <= 2099) {
         return true;
     } else {
+        isError = true;
+        errorMsg.push(CONSTANTS.ERROR_MSGES.YEAR_UNSUPPORT_VAL_ERROR_MSG); 
         return false;
     }
 }
@@ -143,16 +271,30 @@ const isValidTimeValue = function(time, val) {
         return true;
     } else if(time.includes('/')) {
         let startingSecOptionArr = time.split('/');
+        if(!isValidateTime(startingSecOptionArr, val)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+        }
         return isValidateTime(startingSecOptionArr, val);
     } else if(time.includes('-')) {
         let secRangeArr = time.split('-');
+        if(!isValidateTime(secRangeArr, val)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+        }
         return isValidateTime(secRangeArr, val);
     } else if(time.includes(',')) {
         let multiSecArr = time.split(',');
+        if(!isValidateTime(multiSecArr, val)) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+        }
         return isValidateTime(multiSecArr, val)
     } else if (parseInt(time) >= 0 && parseInt(time) <= val) {
         return true;
     } else {
+        isError = true;
+        errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);   
         return false;
     }
 }
