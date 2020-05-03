@@ -28,6 +28,7 @@ cron-expression-validator is a **Node.JS** library to validate **quartz** cron e
 	Day of Month: 1-31, L, LW
 	Months: (JAN-DEC and 1-12)
 	Day of Week: (SUN-SAT and 1-7)
+	Year: 1970-2099
   
   
   
