@@ -4,20 +4,18 @@ cron-expression-validator is a **Node.JS** library to validate **quartz** cron e
 
 ## Installation
 
-  npm install cron-expression-validator
+	npm install cron-expression-validator
   
 ## Usage
 
-isValidCronExpression method reqire string as parameter and returns boolean value
+**isValidCronExpression** method reqire *string* (cron expression) as parameter and returns *boolean* value
 
 	var cronValidator = require('cron-expression-validator');
 	var isValid = cronValidator.isValidCronExpression("* * * * * ? *"); // returns true
 
-
 	if(cronValidator.isValidCronExpression("* * * * * ? *")) { // returns true
-			// Your code
+		// Your code
 	}
-
 
 	if(cronValidator.isValidCronExpression("* * * * * * *")) { // returns false
 		// Your code
