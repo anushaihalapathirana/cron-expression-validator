@@ -67,6 +67,9 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
     if((dayOfWeek === '*' && dayOfMonth !== '*') || (dayOfWeek === '?' && dayOfMonth !== '?')) {
         return true;
     } 
+    if(dayOfWeek.toLowerCase() === 'l') {
+        return true;
+    }
     if(dayOfWeek === '*') {
         return dayOfMonth !== '*';
     } else if(dayOfWeek.includes('/') && dayOfMonth === '?') {
