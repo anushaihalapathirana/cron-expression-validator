@@ -64,7 +64,7 @@ if(cronValidator.isValidCronExpression("0 0 12 1/2 * ? *", {error: false}) { // 
 	Hours: 0-23 * , -
 	Day of Month: 1-31 * , - ? L LW
 	Months: (JAN-DEC or 1-12) * , -	
-	Day of Week: (SUN-SAT or 1-7) * , - ? #
+	Day of Week: (SUN-SAT or 1-7) * , L - ? #
 	Year: 1970-2099 * , -
   
   
