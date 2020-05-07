@@ -59,13 +59,13 @@ if(cronValidator.isValidCronExpression("0 0 12 1/2 * ? *", {error: false}) { // 
 }
 ```
 ## Cron accepted values
-	Seconds: 0-59
-	Minutes: 0-59
-	Hours: 0-23
-	Day of Month: 1-31, L, LW
-	Months: (JAN-DEC and 1-12)
-	Day of Week: (SUN-SAT and 1-7)
-	Year: 1970-2099
+	Seconds: 0-59 * , -
+	Minutes: 0-59 * , -
+	Hours: 0-23 * , -
+	Day of Month: 1-31 * , - ? L LW
+	Months: (JAN-DEC or 1-12) * , -	
+	Day of Week: (SUN-SAT or 1-7) * , - ? #
+	Year: 1970-2099 * , -
   
   
   
