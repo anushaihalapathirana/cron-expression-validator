@@ -314,11 +314,11 @@ const isValidTimeValue = function(time, val) {
         return true;
     } else if(time.includes('/')) {
         let startingSecOptionArr = time.split('/');
-        if(!isValidateTime(startingSecOptionArr, val)) {
+        if(!isValidateTime(startingSecOptionArr, val) && !startingSecOptionArr[0] === '*') {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
         }
-        return isValidateTime(startingSecOptionArr, val);
+        return isValidateTime(startingSecOptionArr, val) || (startingSecOptionArr[0] === '*' && isValidateTime([startingSecOptionArr[1]], val));
     } else if(time.includes('-')) {
         let secRangeArr = time.split('-');
         if(!isValidateTime(secRangeArr, val)) {
