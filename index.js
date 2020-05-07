@@ -51,13 +51,14 @@ exports.isValidCronExpression = function(cronExpression, errorObj) {
     let isValidDayOfWeek = isValidDayOfWeekValue(dayOfWeek, dayOfMonth);
     let isValidYear = year ? isValidYearValue(year): true;
 
-    if(errorObj && errorObj.error && isError) {
+    let isValidCron = isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear;
+    if(errorObj && errorObj.error && isError && !isValidCron) {
         return {
-            isValid: isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear,
+            isValid: isValidCron,
             errorMessage: errorMsg,
         }
     } else {
-        return isValidSeconds && isValidMinutes && isValidHour && isValidDayOfMonth && isValidMonth && isValidDayOfWeek && isValidYear;
+        return isValidCron;
     }
 }
 
@@ -65,7 +66,8 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
 
     if((dayOfWeek === '*' && dayOfMonth !== '*') || (dayOfWeek === '?' && dayOfMonth !== '?')) {
         return true;
-    } if(dayOfWeek === '*') {
+    } 
+    if(dayOfWeek === '*') {
         return dayOfMonth !== '*';
     } else if(dayOfWeek.includes('/') && dayOfMonth === '?') {
         let startingDayOfWeekOptionArr = dayOfWeek.split('/');
@@ -136,7 +138,9 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
 }
 
 const isInvalidValues = function(dayOfWeek, dayOfMonth) {
-    return ((dayOfWeek === '*' && dayOfMonth === '*') || (dayOfWeek === '?' && dayOfMonth === '?'));
+    const isAll = dayOfWeek === '*' && dayOfMonth === '*';
+    const isAny = dayOfWeek === '?' && dayOfMonth === '?';
+    return isAll || isAny;
 }
 
 const isHasErrorMsg = function(array) {
@@ -144,11 +148,12 @@ const isHasErrorMsg = function(array) {
 }
 
 const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
+    const isNotLastDays = !dayOfMonth.toLowerCase().includes('l') || !dayOfMonth.toLowerCase() === 'lw';
     if((dayOfMonth === '*' && dayOfWeek !== '*') || (dayOfMonth === '?' && dayOfWeek !== '?')) {
         return true;
     } else if(dayOfMonth.includes('/') && dayOfWeek === '?') {
         let startingDayOfMonthOptionArr = dayOfMonth.split('/');
-        if(!isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31)) {
+        if(!isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31 && !startingDayOfMonthOptionArr[0] === '*')) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
         }
@@ -156,14 +161,21 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
             isError = true;
             errorMsg.push("(Day of month) - Expression "+startingDayOfMonthOptionArr[1]+" is not a valid increment value. Accepted values are 0-31");
         }
-        return isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31) && isValidateMonthNo([startingDayOfMonthOptionArr[1]], 0, 31);
+        const isValidElements = isValidateMonthNo([startingDayOfMonthOptionArr[0]], 1, 31) && isValidateMonthNo([startingDayOfMonthOptionArr[1]], 0, 31);
+        const isValidFirstElem = startingDayOfMonthOptionArr[0] === '*' && isValidateMonthNo([startingDayOfMonthOptionArr[1]], 0, 31);
+        return isValidElements || isValidFirstElem;
     } else if(dayOfMonth.includes('-') && dayOfWeek === '?') {
         let dayOfMonthRangeArr = dayOfMonth.split('-');
-        if(!isValidateMonthNo(dayOfMonthRangeArr, 1, 31)) {
+        const isLastDayIncludes = dayOfMonthRangeArr[0] === 'L' && isValidateMonthNo([dayOfMonthRangeArr[1]], 1, 30)
+        if(!isLastDayIncludes) {
+            isError = true;
+            errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_2);
+        }
+        if(!isValidateMonthNo(dayOfMonthRangeArr, 1, 31) && dayOfMonthRangeArr[0] !== 'L') {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
         }
-        return isValidateMonthNo(dayOfMonthRangeArr, 1, 31);
+        return isValidateMonthNo(dayOfMonthRangeArr, 1, 31) || isLastDayIncludes;
     } else if(dayOfMonth.includes(',') && dayOfWeek === '?') {
         let multiDayOfMonthArr = dayOfMonth.split(',');
         if(!isValidateMonthNo(multiDayOfMonthArr, 1, 12)) {
@@ -173,7 +185,7 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
         return isValidateMonthNo(multiDayOfMonthArr, 1, 12);
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && (dayOfMonth.toLowerCase() === 'l' || dayOfMonth.toLowerCase() === 'lw')) {
         return true;
-    } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?') {
+    } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && dayOfMonth !== '?' && isNotLastDays) {
         if(parseInt(dayOfMonth) <1 && parseInt(dayOfMonth) > 31) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);

@@ -5,6 +5,7 @@ exports.ERROR_MSGES = {
     DAY_OF_WEEK_ERROR_MSG_4: 'A numeric value between 1 and 5 must follow the # option',
     
     DAY_OF_MONTH_ERROR_MSG_1: 'Day of month values must be between 1 and 31',
+    DAY_OF_MONTH_ERROR_MSG_2: 'Offset from last day must be <= 30',
 
     MONTH_ERROR_MSG: 'Month values must be between 1 and 12',
     MONTH_LETTER_ERROR_MSG: 'Month values must be JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC OR between 1 and 12',

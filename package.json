@@ -1,10 +1,10 @@
 {
   "name": "cron-expression-validator",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Validate cron expressions",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
     "node.js"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/anushaihalapathirana/cron-expression-validator#readme"
+  "homepage": "https://github.com/anushaihalapathirana/cron-expression-validator#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2"
+  }
 }
