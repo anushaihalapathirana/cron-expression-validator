@@ -181,11 +181,11 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
         return isValidateMonthNo(dayOfMonthRangeArr, 1, 31) || isLastDayIncludes;
     } else if(dayOfMonth.includes(',') && dayOfWeek === '?') {
         let multiDayOfMonthArr = dayOfMonth.split(',');
-        if(!isValidateMonthNo(multiDayOfMonthArr, 1, 12)) {
+        if(!isValidateMonthNo(multiDayOfMonthArr, 1, 31)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_MONTH_ERROR_MSG_1);
         }
-        return isValidateMonthNo(multiDayOfMonthArr, 1, 12);
+        return isValidateMonthNo(multiDayOfMonthArr, 1, 31);
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && (dayOfMonth.toLowerCase() === 'l' || dayOfMonth.toLowerCase() === 'lw')) {
         return true;
     } else if(typeof dayOfMonth === 'string' && dayOfWeek === '?' && dayOfMonth !== '?' && isNotLastDays) {
@@ -362,4 +362,3 @@ const isValidateTime = function(dataArray, value) {
         return element >= 0  && element <= value;
     })
 }
-

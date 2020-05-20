@@ -17,6 +17,7 @@ describe('isValidCronExpression', () => {
         expect(index.isValidCronExpression('0 0 12 L * ?')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 LW * ?')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 L-5 * ?')).to.equal(true);
+        expect(index.isValidCronExpression('0 * * 10,30 * ? *')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 ? * 2#1')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 ? * 5#3')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 ? JAN *')).to.equal(true);
