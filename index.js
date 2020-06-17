@@ -206,13 +206,13 @@ const isValidDayOfMonthValue = function(dayOfMonth, dayOfWeek) {
 }
 
 const isValidateMonthNo = function(monthArr, val, endVal) {
-    return monthArr.every(month => {
+    return monthArr.every(function (month) {
         return parseInt(month) >= val && parseInt(month) <= endVal; 
     })
 }
 
 const isValidateMonthStr = function(monthArr, dataArr) {
-    return monthArr.every(month => {
+    return monthArr.every(function (month) {
         return dataArr.includes(month.toLowerCase()); 
     })
 }
@@ -274,7 +274,7 @@ const isValidMonthValue = function(month) {
 }
 
 const isValidateYear = function(yearArr) {
-    return yearArr.every(year => {
+    return yearArr.every(function (year) {
         return parseInt(year) >= MIN_YEAR && parseInt(year) <= MAX_YEAR; 
     })
 }
@@ -358,7 +358,7 @@ const isValidTimeValue = function(time, val) {
 }
 
 const isValidateTime = function(dataArray, value) {
-    return dataArray.every(element => {
+    return dataArray.every(function (element) {
         return element >= 0  && element <= value;
     })
 }
