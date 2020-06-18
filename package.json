@@ -1,6 +1,6 @@
 {
   "name": "cron-expression-validator",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Validate cron expressions",
   "main": "index.js",
   "scripts": {
