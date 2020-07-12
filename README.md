@@ -67,5 +67,5 @@ if(cronValidator.isValidCronExpression("0 0 12 1/2 * ? *", {error: false}) { // 
 	Day of Week: (SUN-SAT or 1-7) * , L - ? #
 	Year: 1970-2099 * , -
   
-  
-  
+## License
+	MIT
