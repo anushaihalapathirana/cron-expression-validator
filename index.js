@@ -249,7 +249,7 @@ const isValidMonthValue = function(month) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_ERROR_MSG);
         }
-        if(isNaN(parseInt(multiMonthArr[0])) && isValidateMonthStr(multiMonthArr, MONTH_LIST)) {
+        if(isNaN(parseInt(multiMonthArr[0])) && !isValidateMonthStr(multiMonthArr, MONTH_LIST)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.MONTH_LETTER_ERROR_MSG); 
         }
@@ -335,12 +335,26 @@ const isValidTimeValue = function(time, val) {
         }
         return isValidateTime(startingSecOptionArr, val) || (startingSecOptionArr[0] === '*' && isValidateTime([startingSecOptionArr[1]], val));
     } else if(time.includes('-')) {
-        let secRangeArr = time.split('-');
-        if(!isValidateTime(secRangeArr, val)) {
-            isError = true;
-            errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+        if(time.includes(',')) {
+            let multiSecArr = time.split(',');
+            let values = multiSecArr.filter(e => !e.includes('-'))
+            let timegap = multiSecArr.filter(e=>e.includes('-')) 
+            let timegapArr = timegap.join('-').split('-')
+            let combineArr = values.concat(timegapArr)
+            
+            if(!isValidateTime(combineArr, val)) {
+                isError = true;
+                errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+            }
+            return isValidateTime(combineArr, val);
+        } else {
+            let secRangeArr = time.split('-');
+            if(!isValidateTime(secRangeArr, val)) {
+                isError = true;
+                errorMsg.push(CONSTANTS.ERROR_MSGES.TIME_ERROR_MSG);     
+            }
+            return isValidateTime(secRangeArr, val);
         }
-        return isValidateTime(secRangeArr, val);
     } else if(time.includes(',')) {
         let multiSecArr = time.split(',');
         if(!isValidateTime(multiSecArr, val)) {
