@@ -24,6 +24,7 @@ describe('isValidCronExpression', () => {
         expect(index.isValidCronExpression('0 0 12 ? JAN,JUN *')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 ? 9-12 *')).to.equal(true);
         expect(index.isValidCronExpression('0 0 12 ? * L')).to.equal(true);
+        expect(index.isValidCronExpression('0/5 14,18,3-39,52 * ? JAN,MAR,SEP MON-FRI 2002-2010')).to.equal(true);
     });
 
     it('should return false', () => {
