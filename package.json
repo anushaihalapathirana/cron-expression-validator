@@ -1,8 +1,9 @@
 {
   "name": "cron-expression-validator",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Validate cron expressions",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "mocha"
   },
