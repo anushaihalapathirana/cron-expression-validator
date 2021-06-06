@@ -1,6 +1,8 @@
+[![typescript](https://camo.githubusercontent.com/56e4a1d9c38168bd7b1520246d6ee084ab9abbbb/68747470733a2f2f62616467656e2e6e65742f62616467652f69636f6e2f547970655363726970743f69636f6e3d74797065736372697074266c6162656c266c6162656c436f6c6f723d626c756526636f6c6f723d353535353535)](https://www.typescriptlang.org/)
+
 # cron-expression-validator
 
-cron-expression-validator is a **Node.JS** library to validate **quartz** cron expressions 
+cron-expression-validator is a **Node.JS** library (support typescript) to validate **quartz** cron expressions 
 
 ## Installation
 
