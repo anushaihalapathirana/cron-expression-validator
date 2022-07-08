@@ -10,6 +10,8 @@ let isError = false;
 let errorMsg = [];
 
 exports.isValidCronExpression = function(cronExpression, errorObj) {
+    isError = false;
+    errorMsg = [];
 
     if(!/\s/g.test(cronExpression)) {
         if(errorObj && errorObj.error) {
