@@ -1,7 +1,7 @@
 const CONSTANTS = require('./constants');
 
 const MONTH_LIST = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const WEEK_ARRRAY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const WEEK_ARRAY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const MIN_YEAR = 1970;
 const MAX_YEAR = 2099;
 const MAX_MIN_SEC_VALUE = 59;
@@ -89,24 +89,24 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
         } 
-        if(isNaN(parseInt(dayOfWeekRangeArr[0])) && isNaN(parseInt(dayOfWeekRangeArr[1])) && !isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRRAY)) {
+        if(isNaN(parseInt(dayOfWeekRangeArr[0])) && isNaN(parseInt(dayOfWeekRangeArr[1])) && !isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRAY)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
         }
         return !isNaN(parseInt(dayOfWeekRangeArr[0])) && !isNaN(parseInt(dayOfWeekRangeArr[1])) ? 
-            isValidateMonthNo(dayOfWeekRangeArr, 1, 7) : isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRRAY);
+            isValidateMonthNo(dayOfWeekRangeArr, 1, 7) : isValidateMonthStr(dayOfWeekRangeArr, WEEK_ARRAY);
     } else if(dayOfWeek.includes(',') && dayOfMonth === '?') {
         let multiDayOfWeekArr = dayOfWeek.split(',');
         if(!isNaN(parseInt(multiDayOfWeekArr[0])) && !isValidateMonthNo(multiDayOfWeekArr, 1, 7)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
         }
-        if(isNaN(parseInt(multiDayOfWeekArr[0])) && !isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRRAY)) {
+        if(isNaN(parseInt(multiDayOfWeekArr[0])) && !isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRAY)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
         }
         return !isNaN(parseInt(multiDayOfWeekArr[0])) ? 
-            isValidateMonthNo(multiDayOfWeekArr, 1, 7) : isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRRAY);
+            isValidateMonthNo(multiDayOfWeekArr, 1, 7) : isValidateMonthStr(multiDayOfWeekArr, WEEK_ARRAY);
     } else if(dayOfWeek.includes('#') && dayOfMonth === '?') {
         let weekdayOfMonthArr = dayOfWeek.split('#');
         if(!isValidateMonthNo([weekdayOfMonthArr[0]], 1, 7)) {
@@ -123,12 +123,12 @@ const isValidDayOfWeekValue = function(dayOfWeek, dayOfMonth) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_1);
         }
-        if(isNaN(parseInt(dayOfWeek)) && !isValidateMonthStr([dayOfWeek], WEEK_ARRRAY)) {
+        if(isNaN(parseInt(dayOfWeek)) && !isValidateMonthStr([dayOfWeek], WEEK_ARRAY)) {
             isError = true;
             errorMsg.push(CONSTANTS.ERROR_MSGES.DAY_OF_WEEK_ERROR_MSG_2);
         }
         return !isNaN(parseInt(dayOfWeek)) ? 
-            isValidateMonthNo([dayOfWeek], 1, 7) : isValidateMonthStr([dayOfWeek], WEEK_ARRRAY);
+            isValidateMonthNo([dayOfWeek], 1, 7) : isValidateMonthStr([dayOfWeek], WEEK_ARRAY);
     } else {
         isError = true;
         if(isInvalidValues(dayOfWeek, dayOfMonth) && !isHasErrorMsg(errorMsg)) {
